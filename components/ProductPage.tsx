@@ -31,7 +31,7 @@ const ProfilePage: React.FC = () => {
     {
       target: "#profile-header",
       title: "Profile Header",
-      content: "This is your profile header.",
+      content: "This is profile header. profile header.This is your profile hea header.This is your profile header. profile header.This is your profile hea . profile header.This is your profile hea header.This is your profile header. profile header.This is your profile h",
       direction: 'right',
     },
     {
