@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface TourStepProps {
   target: string;
   title: string;
   content: string;
   direction?: string;
+  audioUrl?: string;
 }
 
 interface ProductTourProps {
@@ -29,6 +30,7 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
     transform: string;
   } | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null); 
 
   // Function to disable scrolling
   const disableScroll = () => {
@@ -65,6 +67,33 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
 
   const userAgent = useUserAgent();
   const isMobile = /Mobile|Android/i.test(userAgent);
+
+//useEffect to play audio when the step changes
+  useEffect(() => {
+    if (isOpen && steps.length > 0 && steps[currentStep].audioUrl) {
+      const audio = new Audio(steps[currentStep].audioUrl);
+      audioRef.current = audio;
+      audio.play();
+      // Add an event listener for when the audio ends
+    
+      if(currentStep !== steps.length - 1)
+        {
+          setTimeout(() => {
+            audio.addEventListener('ended', goToNextStep);
+          }
+          , 700);
+     
+
+    }
+
+
+      return () => {
+        audio.pause();
+        audio.removeEventListener('ended', goToNextStep);
+      };
+    }
+  }, [currentStep, isOpen, steps]);
+
 
   useEffect(() => {
     if (isOpen && steps.length > 0) {
@@ -151,7 +180,10 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
   const handleTourClose = () => {
     onClose();
     setCurrentStep(0);
-    enableScroll(); // Re-enable scroll when tour is closed
+    enableScroll();
+    if (audioRef.current) {
+      audioRef.current.pause();
+    } // Re-enable scroll when tour is closed
   };
 
 

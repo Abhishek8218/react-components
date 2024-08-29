@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from "react";
 import ProductTour from "./productTour";
 import ProductTourMobile from "./productTourMobile";
+import Modal from "./PopupModel";
 
 const ProfilePage: React.FC = () => {
   // Function to check if the device is mobile
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const useUserAgent = () => {
     const [userAgent, setUserAgent] = useState("");
 
@@ -33,24 +35,28 @@ const ProfilePage: React.FC = () => {
       title: "Profile Header",
       content: "This is profile header. profile header.This is your profile hea header.This is your profile header. profile header.This is your profile hea . profile header.This is your profile hea header.This is your profile header. profile header.This is your profile h",
       direction: 'right',
+      audioUrl: 'step-1.mp3'
     },
     {
       target: "#profile-bio",
       title: "Bio Section",
       content: "This is your bio section.",
       direction: "bottom",
+      audioUrl: 'step-2.mp3'
     },
     {
       target: "#profile-posts",
       title: "Posts Section",
       content: "This is where your posts are displayed.",
       direction: "top",
+      audioUrl: 'step-3.mp3'
     },
     {
       target: "#profile-friends",
       title: "Friends Section",
-      content: "This is your list of friends.",
+      content: "This is your list of friends in the profile.",
       direction: "top",
+      audioUrl: 'step-last.mp3'
     },
   ];
 
@@ -59,8 +65,30 @@ const ProfilePage: React.FC = () => {
   const handleTourStepChange = (target: string) => {
     setCurrentTarget(target);
   };
+
+  useEffect(() => {
+    // Start the tour after a 1-second delay
+    const timer = setTimeout(() => {
+     setIsModalOpen(true);
+    }, 1000); // 1000 milliseconds = 1 second
+
+    return () => clearTimeout(timer); // Clean up the timer if the component unmounts
+  }, []);
+
+
+
+  const startTour = () => {
+    setTourOpen(true);
+    setIsModalOpen(false);
+
+  }
+  
   return (
     <div className="p-4">
+        <Modal  isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartTour={() => {startTour()}}
+        />
       <button
         onClick={() => setTourOpen(true)}
         className="mb-4 p-2 bg-blue-500 text-white rounded"
@@ -158,7 +186,7 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* Product Tour Component */}
-
+    
       {isMobile ? (
         <div>
           <ProductTourMobile
