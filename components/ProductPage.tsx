@@ -89,12 +89,7 @@ const ProfilePage: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         onStartTour={() => {startTour()}}
         />
-      <button
-        onClick={() => setTourOpen(true)}
-        className="mb-4 p-2 bg-blue-500 text-white rounded"
-      >
-        Start Tour
-      </button>
+    
 
       {/* Profile Header */}
       <div

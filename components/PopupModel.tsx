@@ -1,4 +1,6 @@
-import React from 'react';
+'use client'
+
+import React, { useEffect } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,6 +9,21 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onStartTour }) => {
+  
+    // Effect to handle blocking/unblocking scrolling
+    useEffect(() => {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden'; // Block scrolling
+      } else {
+        document.body.style.overflow = ''; // Restore scrolling
+      }
+  
+      // Cleanup function to reset scrolling when the component is unmounted or when isOpen changes
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }, [isOpen]);
+  
   if (!isOpen) return null;
 
   return (
