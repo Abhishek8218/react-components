@@ -5,14 +5,16 @@ import Modal from "./PopupModel";
 import { useTour } from "../context/tourContext";
 
 const ProfilePage: React.FC = () => {
-  // Function to check if the device is mobile
+  
 
-
+//useTour is a custom hook that we created to manage the tour state and steps. It provides the following methods and properties:
   const { setSteps, setIsOpen,currentTarget } = useTour();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);//isModalOpen state to manage the visibility of the modal
 
 
-
+//Define the steps for the tour
   const steps = [
     {
       target: "#profile-header",
@@ -44,7 +46,7 @@ const ProfilePage: React.FC = () => {
     },
   ];
 
-
+//useEffect hook to start the tour after a 1-second delay
   useEffect(() => {
     // Start the tour after a 1-second delay
     const timer = setTimeout(() => {
@@ -55,16 +57,22 @@ const ProfilePage: React.FC = () => {
   }, []);
 
 
-
+//startTour function to start the tour
   const startTour = () => {
-    setSteps(steps);
-    setIsOpen(true);
-    setIsModalOpen(false);
+
+
+    setSteps(steps);//set the steps for the tour
+    setIsOpen(true);//set the isOpen state to true to start the tour
+    setIsModalOpen(false);//close the modal
 
   }
   
+
+
   return (
     <div className="p-4">
+
+      {/* Modal Component */}
         <Modal  isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onStartTour={() => {startTour()}}
