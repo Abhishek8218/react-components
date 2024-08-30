@@ -20,14 +20,14 @@ const ProfilePage: React.FC = () => {
       target: "#profile-header",
       title: "Profile Header",
       content: "This is profile header. profile header.This is your profile hea header.This is your profile header. profile header.This is your profile hea . profile header.This is your profile hea header.This is your profile header. profile header.This is your profile h",
-      direction: 'right',
+      direction: 'right',//direction of the tooltip
       audioUrl: 'step-1.mp3'
     },
     {
       target: "#profile-bio",
       title: "Bio Section",
       content: "This is your bio section.",
-      direction: "bottom",
+      direction: "bottom",//direction of the tooltip
       audioUrl: 'step-2.mp3'
     },
     {
@@ -91,7 +91,7 @@ const ProfilePage: React.FC = () => {
         <img
           src="/profile-pic.png" // Replace with actual image path
           alt="Profile"
-          id="profile-header"
+          id="profile-header"//id of the target element
           className={`w-16 h-16 rounded-full mr-4 ${
             currentTarget === "#profile-header"
               ? "border-4 border-green-500 relative z-[50] "
@@ -106,7 +106,7 @@ const ProfilePage: React.FC = () => {
 
       {/* Profile Bio */}
       <div
-        id="profile-bio"
+        id="profile-bio"//id of the target element
         className={`p-4 bg-white shadow-md mb-4 ${
           currentTarget === "#profile-bio"
             ? "border-4 border-green-500 relative z-[50] "
