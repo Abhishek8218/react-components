@@ -1,123 +1,118 @@
 'use client';
 
 import React, { useState } from 'react';
-import DraggableTable from './draggableTable'; // Importing the separate table component
+import { DragDropContext, Draggable } from 'react-beautiful-dnd';
+import { StrictModeDroppable } from './strictModeDroppable'; // Import the new component
 
-interface Row {
-  id: string;
-  content: string;
-}
+const Page: React.FC = () => {
+  const [table1, setTable1] = useState([
+    { id: '1', text: 'Row 1' },
+    { id: '2', text: 'Row 2' },
+    { id: '3', text: 'Row 3' },
+  ]);
 
-const initialRowsTable1: Row[] = [
-  { id: '1', content: 'Item 1' },
-  { id: '2', content: 'Item 2' },
-  { id: '3', content: 'Item 3' },
-    { id: '4', content: 'Item 4' },
-];
+  const [table2, setTable2] = useState([
+    { id: '4', text: 'Row 4' },
+    { id: '5', text: 'Row 5' },
+    { id: '6', text: 'Row 6' },
+  ]);
 
-const initialRowsTable2: Row[] = [
-  { id: '5', content: 'Item 5' },
-  { id: '6', content: 'Item 6' },
-  { id: '7', content: 'Item 7' },
-  { id: '8', content: 'Item 8' },
-    
-];
+  const onDragEnd = (result: any) => {
+    const { source, destination } = result;
 
-const DraggableTables: React.FC = () => {
-    const [rowsTable1, setRowsTable1] = useState<Row[]>(initialRowsTable1);
-    const [rowsTable2, setRowsTable2] = useState<Row[]>(initialRowsTable2);
-    const [draggedItem, setDraggedItem] = useState<{ row: Row; fromTable: number } | null>(null);
-    const [hoveredTable, setHoveredTable] = useState<number | null>(null);
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    // Handle the start of dragging
-    const handleDragStart = (row: Row, fromTable: number) => {
-      setDraggedItem({ row, fromTable });
-    };
-  
-    // Handle hover over a row
-    const handleDragEnter = (toTable: number, index: number) => {
-      if (!draggedItem) return;
-  
-      setHoveredTable(toTable);
-      setHoveredIndex(index);
-const sourceRows = draggedItem.fromTable === 1 ? rowsTable1 : rowsTable2;
-      if (sourceRows.length === 1) {
-        setErrorMessage('The tables cannot be empty!'); // Set error message
-        handleDrop(); // Prevent the operation
-        return; // Prevent the operation
-      }else{
-        setErrorMessage(null); // Clear the error message
-      }
-  
-      const { row, fromTable } = draggedItem;
-      if (fromTable === toTable) {
-        // Rearrange within the same table
-        const updatedRows = fromTable === 1 ? [...rowsTable1] : [...rowsTable2];
-        updatedRows.splice(index, 0, updatedRows.splice(updatedRows.findIndex(r => r.id === row.id), 1)[0]);
-        fromTable === 1 ? setRowsTable1(updatedRows) : setRowsTable2(updatedRows);
+    if (!destination) return; // If dropped outside
+
+    if (source.droppableId === destination.droppableId) {
+      // Reorder within the same table
+      const sourceList = source.droppableId === 'table1' ? [...table1] : [...table2];
+      const [movedItem] = sourceList.splice(source.index, 1);
+      sourceList.splice(destination.index, 0, movedItem);
+
+      if (source.droppableId === 'table1') {
+        setTable1(sourceList);
       } else {
-        // Moving across tables
-        const sourceRows = fromTable === 1 ? [...rowsTable1] : [...rowsTable2];
-        const targetRows = toTable === 1 ? [...rowsTable1] : [...rowsTable2];
-  
-        sourceRows.splice(sourceRows.findIndex(r => r.id === row.id), 1);
-        targetRows.splice(index, 0, row);
-  
-        fromTable === 1 ? setRowsTable1(sourceRows) : setRowsTable2(sourceRows);
-        toTable === 1 ? setRowsTable1(targetRows) : setRowsTable2(targetRows);
-  
-        // Update drag item state
-        setDraggedItem({ row, fromTable: toTable });
+        setTable2(sourceList);
       }
-    };
-  
-    // Handle the drop event
-    const handleDrop = () => {
-      setDraggedItem(null);
-      setHoveredTable(null);
-      setHoveredIndex(null);
-    };
+    } else {
+      // Move between tables
+      const sourceList = source.droppableId === 'table1' ? [...table1] : [...table2];
+      const destinationList = destination.droppableId === 'table1' ? [...table1] : [...table2];
 
-const handleDragEnd = () => {   
-    console.log('drag end');
+      const [movedItem] = sourceList.splice(source.index, 1);
+      destinationList.splice(destination.index, 0, movedItem);
 
-    setHoveredTable(null);
-    setHoveredIndex(null);
-    setDraggedItem(null);
-
+      setTable1(source.droppableId === 'table1' ? sourceList : destinationList);
+      setTable2(destination.droppableId === 'table2' ? destinationList : sourceList);
     }
-
-
-    return (
-      <div className="flex flex-col justify-center gap-8 p-8">
-          <div className="text-center text-2xl font-bold">Draggable Tables</div>
-          <div className='flex flex-col sm:flex-row justify-center w-full'>
-        <DraggableTable
-          rows={rowsTable1}
-          onDragStart={(row) => handleDragStart(row, 1)}
-          onDragEnter={(index) => handleDragEnter(1, index)}
-          onDrop={handleDrop}
-          onDragEnd={handleDragEnd}
-         
-          hoveredIndex={hoveredTable === 1 ? hoveredIndex : null}
-        />
-        <DraggableTable
-          rows={rowsTable2}
-          onDragStart={(row) => handleDragStart(row, 2)}
-          onDragEnter={(index) => handleDragEnter(2, index)}
-          onDrop={handleDrop}
-          onDragEnd={handleDragEnd}
-         
-          hoveredIndex={hoveredTable === 2 ? hoveredIndex : null}
-        />
-       
-      </div>
-      {errorMessage && (
-        <div className=" text-xs mb-4 text-center text-red-500">{errorMessage}</div>
-      )}
-      </div>
-    );
   };
-  
-  export default DraggableTables;
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 p-4">
+        <StrictModeDroppable droppableId="table1">
+          {(provided) => (
+            <div
+              className="bg-white shadow-lg rounded-lg p-4 flex-1"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <h3 className="text-xl font-semibold mb-4">Table 1</h3>
+              <table className="min-w-full bg-gray-100 rounded-md">
+                <tbody ref={provided.innerRef} {...provided.droppableProps}>
+                  {table1.map((row, index) => (
+                    <Draggable key={row.id} draggableId={row.id} index={index}>
+                      {(provided) => (
+                        <tr
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className="bg-white border-b hover:bg-gray-50"
+                        >
+                          <td className="p-4 text-gray-800">{row.text}</td>
+                        </tr>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </StrictModeDroppable>
+
+        <StrictModeDroppable droppableId="table2">
+          {(provided) => (
+            <div
+              className="bg-white shadow-lg rounded-lg p-4 flex-1"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <h3 className="text-xl font-semibold mb-4">Table 2</h3>
+              <table className="min-w-full bg-gray-100 rounded-md">
+                <tbody ref={provided.innerRef} {...provided.droppableProps}>
+                  {table2.map((row, index) => (
+                    <Draggable key={row.id} draggableId={row.id} index={index}>
+                      {(provided) => (
+                        <tr
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className="bg-white border-b hover:bg-gray-50"
+                        >
+                          <td className="p-4 text-gray-800">{row.text}</td>
+                        </tr>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </StrictModeDroppable>
+      </div>
+    </DragDropContext>
+  );
+};
+
+export default Page;
