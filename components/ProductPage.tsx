@@ -1,33 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ProductTour from "./productTour";
-import ProductTourMobile from "./productTourMobile";
 import Modal from "./PopupModel";
+import { useTour } from "../context/tourContext";
 
 const ProfilePage: React.FC = () => {
   // Function to check if the device is mobile
+
+
+  const { setSteps, setIsOpen,currentTarget } = useTour();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const useUserAgent = () => {
-    const [userAgent, setUserAgent] = useState("");
 
-    useEffect(() => {
-      setUserAgent(navigator.userAgent);
-    }, []);
 
-    return userAgent;
-  };
-
-  const userAgent = useUserAgent();
-
-  const isMobile = /Mobile|Android/i.test(userAgent);
-
-  const [tourOpen, setTourOpen] = useState(false);
-
-    const handleTourClose = () => {
-        setTourOpen(false);
-        setCurrentTarget("");
-    };
 
   const steps = [
     {
@@ -48,23 +32,18 @@ const ProfilePage: React.FC = () => {
       target: "#profile-posts",
       title: "Posts Section",
       content: "This is where your posts are displayed.",
-      direction: "top",
+      direction: "top-left",
       audioUrl: 'step-3.mp3'
     },
     {
       target: "#profile-friends",
       title: "Friends Section",
       content: "This is your list of friends in the profile.",
-      direction: "top",
+      direction: "top-left",
       audioUrl: 'step-last.mp3'
     },
   ];
 
-  const [currentTarget, setCurrentTarget] = useState<string>("");
-
-  const handleTourStepChange = (target: string) => {
-    setCurrentTarget(target);
-  };
 
   useEffect(() => {
     // Start the tour after a 1-second delay
@@ -78,7 +57,8 @@ const ProfilePage: React.FC = () => {
 
 
   const startTour = () => {
-    setTourOpen(true);
+    setSteps(steps);
+    setIsOpen(true);
     setIsModalOpen(false);
 
   }
@@ -182,25 +162,7 @@ const ProfilePage: React.FC = () => {
 
       {/* Product Tour Component */}
     
-      {isMobile ? (
-        <div>
-          <ProductTourMobile
-            steps={steps}
-            isOpen={tourOpen}
-            onClose={handleTourClose}
-            onStepChange={handleTourStepChange}
-          />
-        </div>
-      ) : (
-        <div>
-          <ProductTour
-            steps={steps}
-            isOpen={tourOpen}
-            onClose={handleTourClose}
-            onStepChange={handleTourStepChange}
-          />
-        </div>
-      )}
+
     </div>
   );
 };

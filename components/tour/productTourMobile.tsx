@@ -21,6 +21,7 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
   onClose,
   onStepChange,
 }) => {
+  
   const [currentStep, setCurrentStep] = useState(0);
   const [currentDirection, setCurrentDirection] = useState('bottom');
   const [highlightRect, setHighlightRect] = useState<DOMRect | null>(null);
@@ -79,7 +80,7 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
       if(currentStep !== steps.length - 1)
         {
           setTimeout(() => {
-            audio.addEventListener('ended', goToNextStep);
+           audio.addEventListener('ended', goToNextStep);
           }
           , 700);
      
@@ -108,7 +109,7 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
         const direction = steps[currentStep].direction || 'bottom';
         const position = calculateModalPosition(
           rect,
-          direction as 'bottom' | 'top' | 'left' | 'right'
+          direction as 'bottom' | 'top-left' | 'left' | 'right' | 'top-right' | 'bottom-center' | 'top-center'
         );
         setModalPosition(position);
 
@@ -132,18 +133,18 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
 
   const calculateModalPosition = (
     rect: DOMRect,
-    direction: 'top' | 'bottom' | 'left' | 'right'
+    direction:'bottom' | 'top-left' | 'left' | 'right' | 'top-right' | 'bottom-center' | 'top-center'
   ) => {
     let top = `${rect.top + window.scrollY}px`;
     let left = `${rect.left + window.scrollX}px`;
     let transform = '';
 
     switch (direction) {
-      case 'top':
+      case 'top-left':
         top = `${rect.top + window.scrollY - 20}px`; // Adjust modal above the target
         left = `${rect.left + window.scrollX + rect.width / 2 - 70}px`; // Center modal horizontally above target
         transform = 'translateY(-100%)';
-        setCurrentDirection('top');
+        setCurrentDirection('top-left');
         break;
       case 'bottom':
         top = `${rect.bottom + window.scrollY + 20}px`; // Adjust modal below the target
@@ -152,17 +153,35 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
         setCurrentDirection('bottom');
         break;
       case 'left':
-        top = `${rect.top + window.scrollY + rect.height / 2 - 75}px`; // Center modal vertically relative to target
-        left = `${rect.left + window.scrollX - 310}px`; // Adjust modal to the left of the target
+        top = `${rect.top + window.scrollY + 60}px`; // Center modal vertically relative to target
+        left = `${rect.left + window.scrollX - 20}px`; // Adjust modal to the left of the target
         transform = 'translateX(-100%)'; // Move modal left of target
         setCurrentDirection('left');
         break;
       case 'right':
-        top = `${rect.top + window.scrollY + rect.height / 2 - 10}px`; // Center modal vertically relative to target
-        left = `${rect.right + window.scrollX + 35}px`; // Adjust modal to the right of the target
+        top = `${rect.top + window.scrollY + rect.height + 20}px`; // Center modal vertically relative to target
+        left = `${rect.right + window.scrollX + 10}px`; // Adjust modal to the right of the target
         transform = 'translateX(0)'; // Keep modal right of target
         setCurrentDirection('right');
         break;
+      case 'top-right':
+        top = `${rect.bottom + window.scrollY - 250}px`; // Adjust modal below the target
+        left = `${rect.left + window.scrollX  + 10}px`; // Center modal horizontally below target
+        transform = 'translateY(0)';
+        setCurrentDirection('top-right');
+        break;
+      case 'bottom-center':
+        top = `${rect.bottom + window.scrollY + 80}px`; // Adjust modal below the target
+        left = `${rect.left + window.scrollX + rect.width - 140}px`; // Center modal horizontally below target
+        transform = 'translateY(0)';
+        setCurrentDirection('bottom-center');
+        break;
+      case 'top-center':
+        top = `${rect.top + window.scrollY - 230}px`; // Adjust modal above the target
+        left = `${rect.left + window.scrollX + rect.width -280}px`; // Center modal horizontally above target
+        transform = 'translateY(0)'
+        setCurrentDirection('top-center');
+        break
     }
     return { top, left, transform };
   };
@@ -203,7 +222,7 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
 
       {/* Modal */}
       <div
-        className="fixed z-50 pointer-events-auto bg-white px-2 py-1 shadow-lg rounded-lg  max-w-[60vw] min-w-[60vw] "
+        className="fixed z-50 pointer-events-auto bg-white px-2 py-1 shadow-lg rounded-lg  max-w-[55vw] min-w-[55vw] "
         style={{
           top: modalPosition?.top,
           left: modalPosition?.left,
@@ -217,10 +236,18 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
           className={`absolute ${
             currentDirection === 'bottom'
               ? 'top-[-30px] left-[-100px] rotate-180'
-              : currentDirection === 'top'
+              : currentDirection === 'top-left'
               ? 'top-[90px]  left-[-90px] -scale-x-100 -rotate-12 '
               : currentDirection === 'right'
-              ? 'top-[30px] left-[-95px] rotate-[180deg]'
+              ? 'top-[-20px] left-[-95px] rotate-[210deg]'
+              : currentDirection === 'left'
+              ? 'top-[-20px] right-[-90px] -scale-x-100 rotate-[160deg]'
+              : currentDirection === 'top-right'
+              ? 'top-[90px] right-[-85px] rotate-[25deg]'
+              : currentDirection === 'bottom-center'
+              ? 'top-[-80px] left-[50px] rotate-[200deg]'
+              : currentDirection === 'top-center'
+              ? 'top-[150px] left-[40px] -scale-x-100 rotate-[-40deg]'
               : ''
           }`}
         >
