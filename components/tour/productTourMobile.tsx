@@ -56,18 +56,10 @@ const ProductTourMobile: React.FC<ProductTourProps> = ({
     };
   }, [isOpen]);
 
-  const useUserAgent = () => {
-    const [userAgent, setUserAgent] = useState('');
 
-    useEffect(() => {
-      setUserAgent(navigator.userAgent);
-    }, []);
 
-    return userAgent;
-  };
-
-  const userAgent = useUserAgent();
-  const isMobile = /Mobile|Android/i.test(userAgent);
+  // const userAgent = useUserAgent();
+  // const isMobile = /Mobile|Android/i.test(userAgent);
 
 //useEffect to play audio when the step changes
   useEffect(() => {

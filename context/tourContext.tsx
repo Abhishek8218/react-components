@@ -74,7 +74,7 @@ export const TourProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       ) : (
         <div>
           <ProductTour
-          steps={steps} isOpen={isOpen} onClose={onClose} onStepChange={onStepChange}
+          steps={steps} isOpen={isOpen} onClose={onTourClose} onStepChange={handleTourStepChange}
           />
         </div>
       )}
