@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { TourProvider } from "@/context/tourContext";
+import QueryProvider from "@/provider/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <QueryProvider>
         <TourProvider>
 
         {children}
 
         </TourProvider>
+        </QueryProvider>
         
         </body>
     </html>
