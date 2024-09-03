@@ -109,3 +109,23 @@
     font-size: 14px;
   }
 }
+
+
+
+@layer components {
+  /* .btn-primary {
+      @apply py-1.5 px-3 text-center bg-blue-700 rounded-md text-white;
+  } */
+  input[type='range']::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 bg-white outline outline-4 outline-blue-500 rounded-full cursor-grab transition-shadow hover:drop-shadow-lg ease-in-out;
+  }
+/* 
+  input[type=range] {
+    @apply appearance-none h-[8px] dark:border-y-[#212121] border-slate-200 border-y-2 bg-indigo-500 rounded-full;
+  } */
+}
+
+
+
+
+
