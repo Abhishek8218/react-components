@@ -10,8 +10,33 @@ const ProfilePage: React.FC = () => {
 //useTour is a custom hook that we created to manage the tour state and steps. It provides the following methods and properties:
   const { setSteps, setIsOpen,currentTarget } = useTour();
 
+//setSteps: A function to set the steps for the tour
+//setIsOpen: A function to set the isOpen state to start or stop the tour
+//currentTarget: The current target element for the tour to highlight the element
+
+
   
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);//isModalOpen state to manage the visibility of the modal
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false) ;//isModalOpen state to manage the visibility of the modal
+
+
+
+
+
+
+
+
+//Each step object should have the following properties:
+
+
+//target: The CSS selector of the target element
+//title: The title of the step
+//content: The content of the step
+//direction: The direction of the tooltip
+//audioUrl: The URL of the audio file to be played for the step
+
+//Available Directions: top, top-right, right, bottom-right, bottom, bottom-left, left, top-left
+
+
 
 
 //Define the steps for the tour
